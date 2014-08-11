@@ -5,6 +5,7 @@
   "main": "generators/app",
   "scripts": {
     "coverage": "gulp coverage && xdg-open coverage.html || open coverage.html",
+    "pretest": "node test/helpers/prepare.js",
     "test": "gulp"
   },
   "repository": {
@@ -24,6 +25,10 @@
     "gulp-lab": "0.0.10",
     "jshint-stylish": "^0.4.0",
     "lab": "^4.0.1",
+    "lodash": "^2.4.1",
     "q": "^1.0.1"
+  },
+  "dependencies": {
+    "yeoman-generator": "^0.17.2"
   }
 }
