@@ -67,8 +67,6 @@ module.exports = yeoman.generators.Base.extend({
 		this.src.copy("jshint_test.json", "test/.jshintrc");
 		this.src.copy("jscs.json", ".jscsrc");
 		this.src.copy("gitignore", ".gitignore");
-
-		this.dest.write("package.json", JSON.stringify(this.manifest));
 	},
 
 	install : function () {
@@ -79,6 +77,11 @@ module.exports = yeoman.generators.Base.extend({
 			Q.ninvoke(this, "npmInstall", this.devDependencies, { "--save-dev" : true })
 		])
 		.nodeify(done);
+	},
+
+	writing : function () {
+		this.dest.write("package.json", JSON.stringify(this.manifest));
+		this.dest.mkdir("lib");
 	}
 
 });

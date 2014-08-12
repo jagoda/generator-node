@@ -105,6 +105,16 @@ describe("node:app", function () {
 			checkDependencies(dependencies, loaded);
 			done();
 		});
+
+		it("creates a 'lib' directory", function (done) {
+			assert.file("lib/");
+			done();
+		});
+
+		it("creates a 'test' directory", function (done) {
+			assert.file("test/");
+			done();
+		});
 	});
 
 	describe("with custom NPM attributes", function () {
