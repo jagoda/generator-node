@@ -5,6 +5,7 @@ var helpers = require("yeoman-generator").test;
 var Lab     = require("lab");
 var path    = require("path");
 var script  = exports.lab = Lab.script();
+var shell   = require("shelljs");
 var _       = require("lodash");
 
 var before   = script.before;
@@ -13,6 +14,8 @@ var expect   = Lab.expect;
 var it       = script.it;
 
 describe("node:app", function () {
+	var MANIFEST = "package.json";
+
 	function checkDependencies (dependencies, loaded) {
 		_.each(dependencies, function (dependency) {
 			assert.file("node_modules/" + dependency);
@@ -21,14 +24,22 @@ describe("node:app", function () {
 	}
 
 	function packageDependencies (dev) {
-		var manifest = file.readJSON("package.json");
+		var manifest = file.readJSON(MANIFEST);
 		return _.keys(manifest[ dev ? "devDependencies" : "dependencies" ]);
 	}
 
 	before(function (done) {
+		var tmp = path.join(__dirname, "tmp");
+
 		helpers.run(path.join(__dirname, "..", "generators", "app"))
-		.inDir(path.join(__dirname, "tmp"))
-		.on("end", done);
+		.inDir(tmp)
+		.once("ready", function () {
+			// Configure the project with Git.
+			shell.exec("git init --quiet");
+			shell.exec("git config --local user.name 'Testy Tester'");
+			shell.exec("git config --local user.email testy@testers.com");
+		})
+		.once("end", done);
 	});
 
 	it("creates a gulpfile", function (done) {
@@ -52,7 +63,25 @@ describe("node:app", function () {
 	});
 
 	it("creates a project manifest", function (done) {
-		assert.file("package.json");
+		var defaults = {
+			author      : "Testy Tester <testy@testers.com>",
+			description : undefined,
+			license     : "MIT",
+			name        : "tmp",
+			version     : "0.0.0"
+		};
+
+		var manifest;
+
+		assert.file(MANIFEST);
+		manifest = file.readJSON(MANIFEST);
+
+		_.each(defaults, function (value, name) {
+			expect(manifest[name], name).to.equal(value);
+		});
+		expect(manifest.scripts.test, "test").to.equal("gulp");
+		expect(manifest.scripts.coverage, "coverage").to.equal("gulp coverage");
+
 		done();
 	});
 

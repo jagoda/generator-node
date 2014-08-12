@@ -90,6 +90,5 @@
 
 	"requireDotNotation"                   : true,
 	"requireYodaConditions"                : true,
-	"requireSpaceAfterLineComment"         : true,
 	"disallowNewlineBeforeBlockStatements" : true
 }
