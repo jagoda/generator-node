@@ -2,7 +2,7 @@
 var file      = require("yeoman-generator").file;
 var path      = require("path");
 var root      = path.join(__dirname, "..", "..");
-var templates = path.join(root, "generators", "templates");
+var templates = path.join(root, "generators", "app", "templates");
 
 // Ensure that local config matches the templates for scafolding.
 file.copy(path.join(templates, "gulpfile.js"), path.join(root, "gulpfile.js"));
