@@ -14,16 +14,16 @@ var paths = {
 
 	jshint : {
 		source : path.join(__dirname, ".jshintrc"),
-		test   : path.join(__dirname, "test/.jshintrc")
+		test   : path.join(__dirname, "test", ".jshintrc")
 	},
 
 	source : [
 		path.join(__dirname, "*.js"),
-		path.join(__dirname, "lib/**/*.js")
+		path.join(__dirname, "lib", "**", "*.js")
 	],
 
 	test : [
-		path.join(__dirname, "test/**/*_spec.js")
+		path.join(__dirname, "test", "**", "*_spec.js")
 	]
 };
 
