@@ -59,8 +59,9 @@ describe("node:app", function () {
 			var dependencies = [ "lodash", "q" ];
 
 			var devDependencies = [
-				"gulp", "gulp-jscs", "gulp-jshint", "gulp-lab",
-				"jshint-stylish", "lab"
+				"gulp", "gulp-jscs", "gulp-jshint", "gulp-istanbul",
+				"gulp-istanbul-enforcer", "gulp-mocha", "jshint-stylish",
+				"mocha"
 			];
 
 			var manifest;
