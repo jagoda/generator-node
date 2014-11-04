@@ -1,6 +1,6 @@
 {
   "name": "generator-node",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Yeoman generator for Node projects.",
   "main": "generators/app",
   "scripts": {
