@@ -58,10 +58,5 @@ module.exports = yeoman.generators.Base.extend({
 	writing : function () {
 		this.template("package.json", "package.json", this.options);
 		this.dest.mkdir("lib");
-	},
-
-	end : function () {
-		this.installDependencies(this.async());
 	}
-
 });
