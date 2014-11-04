@@ -1,0 +1,28 @@
+{
+  "name": "<%= name %>",
+  "version": "<%= version %>",
+  "description": "<%= description %>",
+  "main": "lib/",
+  "scripts": {
+    "coverage": "gulp coverage && xdg-open coverage.html || open coverage.html",
+    "test": "gulp"
+  },
+  "author": "<%= author %>",
+  "license": "<%= license %>",
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "gulp": "^3.8.7",
+    "gulp-jscs": "^1.1.0",
+    "gulp-jshint": "^1.8.4",
+    "gulp-lab": "0.0.10",
+    "gulp-mocha": "^1.1.1",
+    "jshint-stylish": "^0.4.0",
+    "lab": "^4.0.1",
+    "lodash": "^2.4.1",
+    "mocha": "^2.0.1"
+  },
+  "dependencies": {
+    "lodash": "^2.4.1",
+    "q": "^1.0.1"
+  }
+}

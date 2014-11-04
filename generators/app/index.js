@@ -1,23 +1,9 @@
 "use strict";
-var Q      = require("q");
 var util   = require("util");
 var yeoman = require("yeoman-generator");
-var _      = require("lodash");
 
 module.exports = yeoman.generators.Base.extend({
-
-	dependencies : [ "lodash", "q" ],
-
-	devDependencies : [
-		"gulp", "gulp-jscs", "gulp-jshint", "gulp-lab", "jshint-stylish", "lab"
-	],
-
-	manifest : {
-		scripts : {
-			coverage : "gulp coverage",
-			test     : "gulp"
-		}
-	},
+	options : {},
 
 	prompting : function () {
 		var done = this.async();
@@ -55,7 +41,7 @@ module.exports = yeoman.generators.Base.extend({
 				}
 			],
 			function (answers) {
-				_.merge(this.manifest, answers);
+				this.options = answers;
 				done();
 			}.bind(this)
 		);
@@ -69,19 +55,13 @@ module.exports = yeoman.generators.Base.extend({
 		this.src.copy("gitignore", ".gitignore");
 	},
 
-	install : function () {
-		var done = this.async();
-
-		Q.all([
-			Q.ninvoke(this, "npmInstall", this.dependencies, { "--save" : true }),
-			Q.ninvoke(this, "npmInstall", this.devDependencies, { "--save-dev" : true })
-		])
-		.nodeify(done);
+	writing : function () {
+		this.template("package.json", "package.json", this.options);
+		this.dest.mkdir("lib");
 	},
 
-	writing : function () {
-		this.dest.write("package.json", JSON.stringify(this.manifest));
-		this.dest.mkdir("lib");
+	end : function () {
+		this.installDependencies(this.async());
 	}
 
 });

@@ -9,4 +9,3 @@ file.copy(path.join(templates, "gulpfile.js"), path.join(root, "gulpfile.js"));
 file.copy(path.join(templates, "jshint_source.json"), path.join(root, ".jshintrc"));
 file.copy(path.join(templates, "jshint_test.json"), path.join(root, "test", ".jshintrc"));
 file.copy(path.join(templates, "jscs.json"), path.join(root, ".jscsrc"));
-file.copy(path.join(templates, "gitignore"), path.join(root, ".gitignore"));

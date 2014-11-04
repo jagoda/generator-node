@@ -1,41 +1,23 @@
 "use strict";
 var assert  = require("yeoman-generator").assert;
+var expect  = require("chai").expect;
 var file    = require("yeoman-generator").file;
 var helpers = require("yeoman-generator").test;
-var Lab     = require("lab");
 var path    = require("path");
-var script  = exports.lab = Lab.script();
-var shell   = require("shelljs");
+var shell   = require("execSync");
 var _       = require("lodash");
-
-var before   = script.before;
-var describe = script.describe;
-var expect   = Lab.expect;
-var it       = script.it;
 
 describe("node:app", function () {
 	var MANIFEST = "package.json";
 
 	function configureGit (name, email) {
 		// Configure the project with Git.
-		shell.exec("git init --quiet");
-		shell.exec("git config --local user.name '" + name + "'");
-		shell.exec("git config --local user.email " + email);
+		shell.run("git init --quiet");
+		shell.run("git config --local user.name '" + name + "'");
+		shell.run("git config --local user.email " + email);
 	}
 
 	describe("using default prompts", function () {
-		function checkDependencies (dependencies, loaded) {
-			_.each(dependencies, function (dependency) {
-				assert.file("node_modules/" + dependency);
-				expect(loaded).to.include(dependency);
-			});
-		}
-
-		function packageDependencies (dev) {
-			var manifest = file.readJSON(MANIFEST);
-			return _.keys(manifest[ dev ? "devDependencies" : "dependencies" ]);
-		}
-
 		before(function (done) {
 			var tmp = path.join(__dirname, "tmp");
 
@@ -68,11 +50,18 @@ describe("node:app", function () {
 		it("creates a project manifest", function (done) {
 			var defaults = {
 				author      : "Testy Tester <testy@testers.com>",
-				description : undefined,
+				description : "",
 				license     : "MIT",
 				name        : "tmp",
 				version     : "0.0.0"
 			};
+
+			var dependencies = [ "lodash", "q" ];
+
+			var devDependencies = [
+				"gulp", "gulp-jscs", "gulp-jshint", "gulp-lab",
+				"jshint-stylish", "lab"
+			];
 
 			var manifest;
 
@@ -83,26 +72,18 @@ describe("node:app", function () {
 				expect(manifest[name], name).to.equal(value);
 			});
 			expect(manifest.scripts.test, "test").to.equal("gulp");
-			expect(manifest.scripts.coverage, "coverage").to.equal("gulp coverage");
+			expect(manifest.scripts.coverage, "coverage").to.equal(
+				"gulp coverage && xdg-open coverage.html || open coverage.html"
+			);
 
-			done();
-		});
+			_.each(dependencies, function (name) {
+				expect(manifest.dependencies, name).to.have.property(name);
+			});
 
-		it("installs project dependencies", function (done) {
-			var dependencies = [ "lodash", "q" ];
-			var loaded       = packageDependencies();
+			_.each(devDependencies, function (name) {
+				expect(manifest.devDependencies, name).to.have.property(name);
+			});
 
-			checkDependencies(dependencies, loaded);
-			done();
-		});
-
-		it("installs development dependencies", function (done) {
-			var dependencies = [
-				"gulp", "gulp-jscs", "gulp-jshint", "gulp-lab", "jshint-stylish", "lab"
-			];
-			var loaded = packageDependencies(true);
-
-			checkDependencies(dependencies, loaded);
 			done();
 		});
 
