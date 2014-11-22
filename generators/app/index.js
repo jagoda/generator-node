@@ -48,6 +48,7 @@ module.exports = yeoman.generators.Base.extend({
 	},
 
 	configuring : function () {
+		this.src.copy("editorconfig", ".editorconfig");
 		this.src.copy("gulpfile.js", "gulpfile.js");
 		this.src.copy("jshint_source.json", ".jshintrc");
 		this.src.copy("jshint_test.json", "test/.jshintrc");

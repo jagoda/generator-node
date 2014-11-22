@@ -88,6 +88,11 @@ describe("node:app", function () {
 			done();
 		});
 
+		it("creates a .editorconfig file", function (done) {
+			assert.file(".editorconfig");
+			done();
+		});
+
 		it("creates a 'lib' directory", function (done) {
 			assert.file("lib/");
 			done();
