@@ -1,4 +1,5 @@
 "use strict";
+var Bluebird = require("bluebird");
 var Enforcer = require("gulp-istanbul-enforcer");
 var FS       = require("fs");
 var Gulp     = require("gulp");
@@ -7,8 +8,8 @@ var JSCS     = require("gulp-jscs");
 var JSHint   = require("gulp-jshint");
 var Mocha    = require("gulp-mocha");
 var Path     = require("path");
-var Q        = require("q");
 var Stylish  = require("jshint-stylish");
+
 var _        = require("lodash");
 
 var paths = {
@@ -29,6 +30,8 @@ var paths = {
 	]
 };
 
+var readFile = Bluebird.promisify(FS.readFile, FS);
+
 function lint (options, files) {
 	return Gulp.src(files)
 	.pipe(new JSHint(options))
@@ -37,19 +40,17 @@ function lint (options, files) {
 }
 
 function loadOptions (path) {
-	return Q.ninvoke(FS, "readFile", path, { encoding : "utf8" })
+	return readFile(path, { encoding : "utf8" })
 	.then(function (contents) {
 		return JSON.parse(contents);
 	});
 }
 
 function promisefy (stream) {
-	var deferred = Q.defer();
-
-	stream.once("finish", deferred.resolve.bind(deferred));
-	stream.once("error", deferred.reject.bind(deferred));
-
-	return deferred.promise;
+	return new Bluebird(function (resolve, reject) {
+		stream.once("finish", resolve);
+		stream.once("error", reject);
+	});
 }
 
 function style (options, files) {
@@ -84,14 +85,14 @@ Gulp.task("lint-source", function () {
 });
 
 Gulp.task("lint-test", function () {
-	return Q.all([
+	return Bluebird.join(
 		loadOptions(paths.jshint.source),
-		loadOptions(paths.jshint.test)
-	])
-	.spread(function (source, test) {
-		var options = _.merge(source, test);
-		return promisefy(lint(options, paths.test));
-	});
+		loadOptions(paths.jshint.test),
+		function (source, test) {
+			var options = _.merge(source, test);
+			return promisefy(lint(options, paths.test));
+		}
+	);
 });
 
 Gulp.task("style", function () {

@@ -56,7 +56,7 @@ describe("node:app", function () {
 				version     : "0.0.0"
 			};
 
-			var dependencies = [ "lodash", "q" ];
+			var dependencies = [ "bluebird", "lodash" ];
 
 			var devDependencies = [
 				"gulp", "gulp-jscs", "gulp-jshint", "gulp-istanbul",

@@ -32,8 +32,8 @@
     "mocha": "^2.0.1"
   },
   "dependencies": {
+    "bluebird": "^2.6.4",
     "lodash": "^2.4.1",
-    "q": "^1.0.1",
     "yeoman-generator": "^0.17.2"
   },
   "peerDependencies": {
