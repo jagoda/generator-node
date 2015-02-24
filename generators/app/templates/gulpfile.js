@@ -10,7 +10,8 @@ var Mocha    = require("gulp-mocha");
 var Path     = require("path");
 var Stylish  = require("jshint-stylish");
 
-var _        = require("lodash");
+var consume = require("stream-consume");
+var _       = require("lodash");
 
 var paths = {
 	jscs : Path.join(__dirname, ".jscsrc"),
@@ -47,10 +48,13 @@ function loadOptions (path) {
 }
 
 function promisefy (stream) {
-	return new Bluebird(function (resolve, reject) {
+	var promise = new Bluebird(function (resolve, reject) {
 		stream.once("finish", resolve);
 		stream.once("error", reject);
 	});
+
+	consume(stream);
+	return promise;
 }
 
 function style (options, files) {
@@ -103,13 +107,17 @@ Gulp.task("style", function () {
 });
 
 Gulp.task("test", [ "lint", "style" ], function (done) {
-	Gulp.src(paths.source)
+	var stream = Gulp.src(paths.source)
 	.pipe(new Istanbul())
 	.on("finish", function () {
-		Gulp.src(paths.test)
+		var stream = Gulp.src(paths.test)
 		.pipe(new Mocha())
 		.pipe(Istanbul.writeReports())
 		.on("end", done)
 		.on("error", done);
+
+		consume(stream);
 	});
+
+	consume(stream);
 });

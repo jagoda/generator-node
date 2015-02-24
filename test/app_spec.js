@@ -61,7 +61,7 @@ describe("node:app", function () {
 			var devDependencies = [
 				"gulp", "gulp-jscs", "gulp-jshint", "gulp-istanbul",
 				"gulp-istanbul-enforcer", "gulp-mocha", "jshint-stylish",
-				"mocha"
+				"mocha", "stream-consume"
 			];
 
 			var manifest;
