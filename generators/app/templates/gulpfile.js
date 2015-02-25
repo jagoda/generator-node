@@ -77,7 +77,7 @@ Gulp.task("coverage", [ "test" ], function () {
 	return Gulp.src(".").pipe(new Enforcer(options));
 });
 
-Gulp.task("default", [ "test" ]);
+Gulp.task("default", [ "coverage" ]);
 
 Gulp.task("lint", [ "lint-source", "lint-test" ]);
 
@@ -109,6 +109,7 @@ Gulp.task("style", function () {
 Gulp.task("test", [ "lint", "style" ], function (done) {
 	var stream = Gulp.src(paths.source)
 	.pipe(new Istanbul())
+	.pipe(Istanbul.hookRequire())
 	.on("finish", function () {
 		var stream = Gulp.src(paths.test)
 		.pipe(new Mocha())

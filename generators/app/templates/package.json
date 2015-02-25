@@ -4,7 +4,7 @@
   "description": "<%= description %>",
   "main": "lib/",
   "scripts": {
-    "coverage": "gulp coverage && xdg-open coverage.html || open coverage.html",
+    "coverage": "gulp && xdg-open coverage/lcov-report/index.html || open coverage/lcov-report/index.html",
     "test": "gulp"
   },
   "author": "<%= author %>",
@@ -12,7 +12,7 @@
   "devDependencies": {
     "chai": "^1.9.2",
     "gulp": "^3.8.7",
-    "gulp-istanbul": "^0.3.1",
+    "gulp-istanbul": "^0.6.0",
     "gulp-istanbul-enforcer": "^1.0.3",
     "gulp-jscs": "^1.1.0",
     "gulp-jshint": "^1.8.4",

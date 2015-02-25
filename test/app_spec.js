@@ -74,7 +74,8 @@ describe("node:app", function () {
 			});
 			expect(manifest.scripts.test, "test").to.equal("gulp");
 			expect(manifest.scripts.coverage, "coverage").to.equal(
-				"gulp coverage && xdg-open coverage.html || open coverage.html"
+				"gulp && xdg-open coverage/lcov-report/index.html || " +
+				"open coverage/lcov-report/index.html"
 			);
 
 			_.each(dependencies, function (name) {
