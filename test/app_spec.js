@@ -1,10 +1,10 @@
 "use strict";
 var assert  = require("yeoman-generator").assert;
 var expect  = require("chai").expect;
-var file    = require("yeoman-generator").file;
+var FS      = require("fs");
 var helpers = require("yeoman-generator").test;
-var path    = require("path");
-var shell   = require("execSync");
+var Path    = require("path");
+var shell   = require("child_process").execSync;
 var _       = require("lodash");
 
 describe("node:app", function () {
@@ -12,16 +12,16 @@ describe("node:app", function () {
 
 	function configureGit (name, email) {
 		// Configure the project with Git.
-		shell.run("git init --quiet");
-		shell.run("git config --local user.name '" + name + "'");
-		shell.run("git config --local user.email " + email);
+		shell("git init --quiet");
+		shell("git config --local user.name '" + name + "'");
+		shell("git config --local user.email " + email);
 	}
 
 	describe("using default prompts", function () {
 		before(function (done) {
-			var tmp = path.join(__dirname, "tmp");
+			var tmp = Path.join(__dirname, "tmp");
 
-			helpers.run(path.join(__dirname, "..", "generators", "app"))
+			helpers.run(Path.join(__dirname, "..", "generators", "app"))
 			.inDir(tmp)
 			.once("ready", configureGit.bind(null, "Testy Tester", "testy@testers.com"))
 			.once("end", done);
@@ -60,14 +60,13 @@ describe("node:app", function () {
 
 			var devDependencies = [
 				"gulp", "gulp-jscs", "gulp-jshint", "gulp-istanbul",
-				"gulp-istanbul-enforcer", "gulp-mocha", "jshint-stylish",
-				"mocha", "stream-consume"
+				"gulp-mocha", "jshint-stylish", "mocha", "stream-consume"
 			];
 
 			var manifest;
 
 			assert.file(MANIFEST);
-			manifest = file.readJSON(MANIFEST);
+			manifest = JSON.parse(FS.readFileSync(MANIFEST));
 
 			_.each(defaults, function (value, name) {
 				expect(manifest[name], name).to.equal(value);
@@ -94,11 +93,6 @@ describe("node:app", function () {
 			done();
 		});
 
-		it("creates a 'lib' directory", function (done) {
-			assert.file("lib/");
-			done();
-		});
-
 		it("creates a 'test' directory", function (done) {
 			assert.file("test/");
 			done();
@@ -116,14 +110,12 @@ describe("node:app", function () {
 		var manifest;
 
 		before(function (done) {
-			var tmp = path.join(__dirname, "tmp");
-
-			helpers.run(path.join(__dirname, "..", "generators", "app"))
-			.inDir(tmp)
-			.withPrompt(prompts)
+			helpers.run(Path.join(__dirname, "..", "generators", "app"))
+			.inTmpDir()
+			.withPrompts(prompts)
 			.once("ready", configureGit.bind(null, "Foo", "foo@example.com"))
 			.once("end", function () {
-				manifest = file.readJSON(MANIFEST);
+				manifest = JSON.parse(FS.readFileSync(MANIFEST));
 				done();
 			});
 		});

@@ -1,6 +1,5 @@
 "use strict";
 var Bluebird = require("bluebird");
-var Enforcer = require("gulp-istanbul-enforcer");
 var FS       = require("fs");
 var Gulp     = require("gulp");
 var Istanbul = require("gulp-istanbul");
@@ -23,7 +22,7 @@ var paths = {
 
 	source : [
 		Path.join(__dirname, "*.js"),
-		Path.join(__dirname, "lib", "**", "*.js")
+		Path.join(__dirname, "generators", "**", "*.js")
 	],
 
 	test : [
@@ -61,23 +60,7 @@ function style (options, files) {
 	return Gulp.src(files).pipe(JSCS(options));
 }
 
-Gulp.task("coverage", [ "test" ], function () {
-	var options = {
-		thresholds : {
-			statements : 100,
-			branches   : 100,
-			lines      : 100,
-			functions  : 100
-		},
-
-		coverageDirectory : "coverage",
-		rootDirectory     : ""
-	};
-
-	return Gulp.src(".").pipe(new Enforcer(options));
-});
-
-Gulp.task("default", [ "coverage" ]);
+Gulp.task("default", [ "test" ]);
 
 Gulp.task("lint", [ "lint-source", "lint-test" ]);
 
@@ -107,6 +90,15 @@ Gulp.task("style", function () {
 });
 
 Gulp.task("test", [ "lint", "style" ], function (done) {
+	var thresholds = {
+		global : {
+			branches   : 100,
+			functions  : 100,
+			lines      : 100,
+			statements : 100
+		}
+	};
+
 	var stream = Gulp.src(paths.source)
 	.pipe(new Istanbul())
 	.pipe(Istanbul.hookRequire())
@@ -114,6 +106,7 @@ Gulp.task("test", [ "lint", "style" ], function (done) {
 		var stream = Gulp.src(paths.test)
 		.pipe(new Mocha())
 		.pipe(Istanbul.writeReports())
+		.pipe(Istanbul.enforceThresholds({ thresholds : thresholds }))
 		.on("end", done)
 		.on("error", done);
 

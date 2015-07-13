@@ -48,16 +48,15 @@ module.exports = yeoman.generators.Base.extend({
 	},
 
 	configuring : function () {
-		this.src.copy("editorconfig", ".editorconfig");
-		this.src.copy("gulpfile.js", "gulpfile.js");
-		this.src.copy("jshint_source.json", ".jshintrc");
-		this.src.copy("jshint_test.json", "test/.jshintrc");
-		this.src.copy("jscs.json", ".jscsrc");
-		this.src.copy("gitignore", ".gitignore");
+		this.fs.copy(this.templatePath("editorconfig"), this.destinationPath(".editorconfig"));
+		this.fs.copy(this.templatePath("gulpfile.js"), this.destinationPath("gulpfile.js"));
+		this.fs.copy(this.templatePath("jshint_source.json"), this.destinationPath(".jshintrc"));
+		this.fs.copy(this.templatePath("jshint_test.json"), this.destinationPath("test/.jshintrc"));
+		this.fs.copy(this.templatePath("jscs.json"), this.destinationPath(".jscsrc"));
+		this.fs.copy(this.templatePath("gitignore"), this.destinationPath(".gitignore"));
 	},
 
 	writing : function () {
 		this.template("package.json", "package.json", this.options);
-		this.dest.mkdir("lib");
 	}
 });
